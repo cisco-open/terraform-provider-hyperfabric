@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  # Permission for checking out code
+  contents: read
+
+jobs:
+  build:
+    name: Check & Build Provider
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - run: chmod +x ./scripts/gofmtcheck.sh
+      - name: gofmt Check
+        run: ./scripts/gofmtcheck.sh
+      - run: go mod tidy
+      - run: go mod vendor
+      - name: Check vendor for changes
+        run: git diff --exit-code
+      - name: Build
+        run: go build -v
+
+  diff:
+    name: Check Generated Code Difference
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - name: Generate provider code
+        run: go generate
+      - name: Check generated code for diffs
+        run: git diff --exit-code
+
+  go-releaser:
+    name: Dry-Run GoReleaser Check
+    needs: [build, diff]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+      - uses: actions/setup-go@v5
+      - name: Install GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          install-only: true
+          version: latest
+      - name: GoReleaser Release Check
+        run: goreleaser release --skip=publish,sign --snapshot --clean
+
+  acceptance:
+    name: Acceptance Tests
+    if: github.repository_owner == 'cisco-open'
+    needs: [build, diff]
+    runs-on: ubuntu-latest
+    env:
+      HYPERFABRIC_TOKEN: 'TOKENTOKENTOKEN'
+    concurrency:
+        group: tf-hyperfabric-ci-test
+        cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.7.*'
+          terraform_wrapper: false
+      - name: Terraform Acceptance Test
+        run: go test github.com/cisco-open/terraform-provider-hyperfabric/internal/provider -v -race -timeout 300m -coverprofile=coverage.out -covermode=atomic
+        env:
+          TF_ACC: '1'
+          TF_ACC_STATE_LINEAGE: '1'
+      - name: Upload coverage to Codecov
+        # Upload Coverage on latest only
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
