@@ -1,0 +1,45 @@
+.DS_Store
+**/.vscode
+**/.terraform
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/terraform.tfplan
+**/terraform.tfstate
+**/.terraform.lock.hcl
+**/.idea
+
+*.dll
+*.exe
+example.tf
+terraform.tfplan
+terraform.tfstate
+bin/
+dist/
+modules-dev/
+/pkg/
+website/.vagrant
+website/.bundle
+website/build
+website/node_modules
+.vagrant/
+*.backup
+.terraform/
+*.log
+*.bak
+*~
+.*.swp
+*.iml
+*.test
+*.iml
+
+website/vendor
+
+# Test exclusions
+!command/test-fixtures/**/*.tfstate
+!command/test-fixtures/**/.terraform/
+
+# Keep windows files with windows line endings
+*.winfile eol=crlf
+
+# Build file
+terraform-provider-hyperfabric
