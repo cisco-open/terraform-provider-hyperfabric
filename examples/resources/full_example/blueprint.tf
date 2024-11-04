@@ -104,6 +104,12 @@ resource "hyperfabric_node_management_port" "node3" {
   proxy_password   = "my_super_secret_password2"
 }
 
+resource "hyperfabric_node_port" "node3_eth1_10" {
+  node_id = hyperfabric_node.node3.id
+	name = "Ethernet1_10"
+  roles = ["UNUSED_PORT"]
+}
+
 data "hyperfabric_node_management_port" "node3" {
   node_id = hyperfabric_node_management_port.node3.node_id
 }

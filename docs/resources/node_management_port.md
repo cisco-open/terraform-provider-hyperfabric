@@ -47,7 +47,7 @@ resource "hyperfabric_node_management_port" "full_example_node_management_port" 
   cloud_urls       = ["https://hyperfabric.cisco.com"]
   ntp_addresses    = ["be.pool.ntp.org", "us.pool.ntp.org"]
   no_proxy         = ["10.0.0.1", "server.local"]
-  proxy_address    = "proxy.mycompany.com:80"
+  proxy_address    = "http://proxy.mycompany.com:80"
   proxy_username   = "my_proxy_user"
   proxy_password   = "my_super_secret_password2"
 }

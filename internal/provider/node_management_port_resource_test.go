@@ -59,7 +59,7 @@ func TestAccNodeManagementPortResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "no_proxy.#", "2"),
 					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "no_proxy.0", "10.0.0.1"),
 					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "no_proxy.1", "server.local"),
-					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "proxy_address", "proxy.mycompany.com:80"),
+					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "proxy_address", "http://proxy.mycompany.com:80"),
 					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "proxy_username", "my_proxy_user"),
 					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "proxy_password", "my_super_secret_password"),
 				),
@@ -91,7 +91,7 @@ func TestAccNodeManagementPortResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "no_proxy.#", "2"),
 					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "no_proxy.0", "10.0.0.1"),
 					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "no_proxy.1", "server.local"),
-					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "proxy_address", "proxy.mycompany.com:80"),
+					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "proxy_address", "http://proxy.mycompany.com:80"),
 					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "proxy_username", "my_proxy_user"),
 					resource.TestCheckResourceAttr("hyperfabric_node_management_port.test", "proxy_password", "my_super_secret_password"),
 				),
@@ -197,7 +197,7 @@ resource "hyperfabric_node_management_port" "test" {
 	cloud_urls       = ["https://hyperfabric.cisco.com"]
 	ntp_addresses    = ["be.pool.ntp.org", "us.pool.ntp.org"]
 	no_proxy         = ["10.0.0.1", "server.local"]
-	proxy_address    = "proxy.mycompany.com:80"
+	proxy_address    = "http://proxy.mycompany.com:80"
 	proxy_username   = "my_proxy_user"
 	proxy_password   = "my_super_secret_password"
 }

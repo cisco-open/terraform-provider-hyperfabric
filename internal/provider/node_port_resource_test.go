@@ -30,7 +30,7 @@ func TestAccNodePortResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("hyperfabric_node_port.test", "name", "Ethernet1_1"),
 					resource.TestCheckResourceAttr("hyperfabric_node_port.test", "roles.#", "1"),
-					resource.TestCheckResourceAttr("hyperfabric_node_port.test", "roles.0", "UNUSED_PORT"),
+					resource.TestCheckResourceAttr("hyperfabric_node_port.test", "roles.0", "ROUTED_PORT"),
 				),
 			},
 			// Update with all config and verify provided values.
@@ -127,7 +127,7 @@ func TestAccNodePortResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("hyperfabric_node_port.test", "name", "Ethernet1_1"),
 					resource.TestCheckResourceAttr("hyperfabric_node_port.test", "roles.#", "1"),
-					resource.TestCheckResourceAttr("hyperfabric_node_port.test", "roles.0", "UNUSED_PORT"),
+					resource.TestCheckResourceAttr("hyperfabric_node_port.test", "roles.0", "ROUTED_PORT"),
 				),
 			},
 		},
@@ -143,7 +143,7 @@ resource "hyperfabric_fabric" "test" {
 
 resource "hyperfabric_vrf" "test" {
     fabric_id = hyperfabric_fabric.test.id
-	name = "Vrf1"
+	name      = "Vrf1"
 }
 
 resource "hyperfabric_node" "test" {
@@ -154,8 +154,8 @@ resource "hyperfabric_node" "test" {
 }
 
 resource "hyperfabric_node_port" "test" {
-	node_id          = hyperfabric_node.test.id
-	name             = "Ethernet1_1"
+	node_id            = hyperfabric_node.test.id
+	name               = "Ethernet1_1"
 	description        = "Connected to server01"
 	enabled            = true
 	ipv4_addresses     = ["10.1.0.1/24"]
@@ -173,7 +173,7 @@ resource "hyperfabric_fabric" "test" {
 
 resource "hyperfabric_vrf" "test" {
     fabric_id = hyperfabric_fabric.test.id
-	name = "Vrf1"
+	name      = "Vrf1"
 }
 
 resource "hyperfabric_node" "test" {
@@ -184,8 +184,8 @@ resource "hyperfabric_node" "test" {
 }
 
 resource "hyperfabric_node_port" "test" {
-	node_id          = hyperfabric_node.test.id
-	name             = "Ethernet1_1"
+	node_id            = hyperfabric_node.test.id
+	name               = "Ethernet1_1"
 	description        = "Connected to server01"
 	enabled            = true
 	ipv4_addresses     = []
@@ -204,7 +204,7 @@ resource "hyperfabric_fabric" "test" {
 
 resource "hyperfabric_vrf" "test" {
     fabric_id = hyperfabric_fabric.test.id
-	name = "Vrf1"
+	name      = "Vrf1"
 }
 
 resource "hyperfabric_node" "test" {
@@ -216,7 +216,8 @@ resource "hyperfabric_node" "test" {
 
 resource "hyperfabric_node_port" "test" {
 	node_id = hyperfabric_node.test.id
-	name = "Ethernet1_1"
+	name    = "Ethernet1_1"
+	roles   = ["ROUTED_PORT"]
 }
 `, fabricName)
 	} else {
@@ -227,7 +228,7 @@ resource "hyperfabric_fabric" "test" {
 
 resource "hyperfabric_vrf" "test" {
     fabric_id = hyperfabric_fabric.test.id
-	name = "Vrf1"
+	name      = "Vrf1"
 }
 
 resource "hyperfabric_node" "test" {
@@ -239,7 +240,8 @@ resource "hyperfabric_node" "test" {
 
 resource "hyperfabric_node_port" "test" {
     node_id = hyperfabric_node.test.id
-	name = "Ethernet1_1"
+	name    = "Ethernet1_1"
+	roles   = ["ROUTED_PORT"]
 }
 `, fabricName)
 	}

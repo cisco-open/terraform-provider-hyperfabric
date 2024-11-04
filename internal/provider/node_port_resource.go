@@ -16,7 +16,6 @@ import (
 	"github.com/cisco-open/terraform-provider-hyperfabric/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -24,7 +23,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -114,6 +112,10 @@ func getNewNodePortResourceModelFromData(data *NodePortResourceModel) *NodePortR
 
 	if !data.Id.IsNull() && !data.Id.IsUnknown() {
 		newNodePort.Id = data.Id
+	}
+
+	if !data.PortId.IsNull() && !data.PortId.IsUnknown() {
+		newNodePort.PortId = data.PortId
 	}
 
 	if !data.NodeId.IsNull() && !data.NodeId.IsUnknown() {
@@ -447,12 +449,7 @@ func getIpv6AddressesDataSourceSchemaAttribute() schema.SetAttribute {
 func getPortRolesSchemaAttribute() schema.SetAttribute {
 	return schema.SetAttribute{
 		MarkdownDescription: `A set of roles used for the Port of the Node.`,
-		Optional:            true,
-		Computed:            true,
-		Default: setdefault.StaticValue(types.SetValueMust(
-			types.StringType,
-			[]attr.Value{types.StringValue("UNUSED_PORT")},
-		)),
+		Required:            true,
 		Validators: []validator.Set{
 			setvalidator.ValueStringsAre(stringvalidator.OneOf([]string{"UNUSED_PORT", "FABRIC_PORT", "HOST_PORT", "ROUTED_PORT", "LAG_PORT"}...)),
 		},
@@ -529,12 +526,7 @@ func (r *NodePortResource) Create(ctx context.Context, req resource.CreateReques
 		return
 	}
 
-	portContainer, err := container.ArrayElement(0, "ports")
-	if err != nil {
-		return
-	}
-
-	portId := StripQuotes(portContainer.Search("id").String())
+	portId := StripQuotes(container.Search("id").String())
 	if portId != "" {
 		data.Id = basetypes.NewStringValue(fmt.Sprintf("%s/ports/%s", data.NodeId.ValueString(), portId))
 		data.PortId = basetypes.NewStringValue(portId)
@@ -594,7 +586,7 @@ func (r *NodePortResource) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
-	DoRestRequest(ctx, &resp.Diagnostics, r.client, fmt.Sprintf("/api/v1/fabrics/%s/ports/%s", data.NodeId.ValueString(), data.PortId.ValueString()), "PUT", jsonPayload)
+	DoRestRequest(ctx, &resp.Diagnostics, r.client, fmt.Sprintf("/api/v1/fabrics/%s/ports/%s", data.NodeId.ValueString(), data.Name.ValueString()), "PUT", jsonPayload)
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -622,7 +614,7 @@ func (r *NodePortResource) Delete(ctx context.Context, req resource.DeleteReques
 	checkAndSetNodePortIds(data)
 	// DoRestRequest(ctx, &resp.Diagnostics, r.client, fmt.Sprintf("/api/v1/fabrics/%s/ports/%s", data.NodeId.ValueString(), data.PortId.ValueString()), "DELETE", nil)
 	jsonPayload := getNodePortJsonPayload(ctx, &resp.Diagnostics, data, "delete")
-	DoRestRequest(ctx, &resp.Diagnostics, r.client, fmt.Sprintf("/api/v1/fabrics/%s/ports/%s", data.NodeId.ValueString(), data.PortId.ValueString()), "PUT", jsonPayload)
+	DoRestRequest(ctx, &resp.Diagnostics, r.client, fmt.Sprintf("/api/v1/fabrics/%s/ports/%s", data.NodeId.ValueString(), data.Name.ValueString()), "PUT", jsonPayload)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -728,7 +720,7 @@ func getNodePortJsonPayload(ctx context.Context, diags *diag.Diagnostics, data *
 	}
 
 	if !data.Ipv6Addresses.IsNull() && !data.Ipv6Addresses.IsUnknown() {
-		payloadMap["ipv6Addresses"] = getSetStringJsonPayload(ctx, data.Ipv4Addresses)
+		payloadMap["ipv6Addresses"] = getSetStringJsonPayload(ctx, data.Ipv6Addresses)
 	}
 
 	if !data.PreventForwarding.IsNull() && !data.PreventForwarding.IsUnknown() {

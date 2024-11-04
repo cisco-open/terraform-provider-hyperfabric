@@ -65,7 +65,7 @@ func getEmptyBearerTokenResourceModel() *BearerTokenResourceModel {
 		Description: basetypes.NewStringNull(),
 		NotAfter:    timetypes.NewRFC3339Null(),
 		NotBefore:   timetypes.NewRFC3339Null(),
-		Scope:       basetypes.NewStringNull(),
+		Scope:       basetypes.NewStringValue("ADMIN"),
 		Token:       basetypes.NewStringNull(),
 		Metadata:    basetypes.NewObjectNull(MetadataResourceModelAttributeType()),
 		// Labels:      basetypes.NewSetNull(SetStringResourceModelAttributeType()),
