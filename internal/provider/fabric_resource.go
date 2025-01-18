@@ -13,12 +13,14 @@ import (
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/cisco-open/terraform-provider-hyperfabric/internal/client"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -43,7 +45,7 @@ type FabricResourceModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 	// Enabled     types.Bool   `tfsdk:"enabled"`
-	// Topology    types.String `tfsdk:"topology"`
+	Topology    types.String `tfsdk:"topology"`
 	Location    types.String `tfsdk:"location"`
 	Address     types.String `tfsdk:"address"`
 	City        types.String `tfsdk:"city"`
@@ -59,7 +61,7 @@ func getEmptyFabricResourceModel() *FabricResourceModel {
 		Name:        basetypes.NewStringNull(),
 		Description: basetypes.NewStringNull(),
 		// Enabled:     basetypes.NewBoolValue(true),
-		// Topology: basetypes.NewStringNull(),
+		Topology:    basetypes.NewStringNull(),
 		Location:    basetypes.NewStringNull(),
 		Address:     basetypes.NewStringNull(),
 		City:        basetypes.NewStringNull(),
@@ -89,9 +91,9 @@ func getNewFabricResourceModelFromData(data *FabricResourceModel) *FabricResourc
 	//  newFabric.Enabled = data.Enabled
 	// }
 
-	// if !data.Topology.IsNull() && !data.Topology.IsUnknown() {
-	//  newFabric.Topology = data.Topology
-	// }
+	if !data.Topology.IsNull() && !data.Topology.IsUnknown() {
+		newFabric.Topology = data.Topology
+	}
 
 	if !data.Location.IsNull() && !data.Location.IsUnknown() {
 		newFabric.Location = data.Location
@@ -156,6 +158,18 @@ func (r *FabricResource) Schema(ctx context.Context, req resource.SchemaRequest,
 					SetToStringNullWhenStateIsNullPlanIsUnknownDuringUpdate(),
 				},
 			},
+			"topology": schema.StringAttribute{
+				MarkdownDescription: "The topology type of the Fabric.",
+				Optional:            true,
+				Computed:            true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+					SetToStringNullWhenStateIsNullPlanIsUnknownDuringUpdate(),
+				},
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{"MESH", "SPINE_LEAF"}...),
+				},
+			},
 			// "enabled": schema.BoolAttribute{
 			// 	MarkdownDescription: "The enabled state of the Fabric.",
 			// 	Optional:            true,
@@ -163,15 +177,6 @@ func (r *FabricResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			// 	PlanModifiers: []planmodifier.Bool{
 			// 		boolplanmodifier.UseStateForUnknown(),
 			// 	},
-			// },
-			// "topology": schema.StringAttribute{
-			// 	MarkdownDescription: "The topology used by the Fabric.",
-			// 	Optional:            true,
-			// 	Computed:            true,
-			// 	PlanModifiers: []planmodifier.String{
-			// 		stringplanmodifier.UseStateForUnknown(),
-			// 	},
-			// 	Default: stringdefault.StaticString("SPINE_LEAF"),
 			// },
 			"location": schema.StringAttribute{
 				MarkdownDescription: "The location of the Fabric.",
@@ -387,8 +392,8 @@ func getAndSetFabricAttributes(ctx context.Context, diags *diag.Diagnostics, cli
 				newFabric.Description = basetypes.NewStringValue(attributeValue.(string))
 				// } else if attributeName == "enabled" {
 				// 	newFabric.Enabled = basetypes.NewBoolValue(attributeValue.(bool))
-				// } else if attributeName == "topology" {
-				// 	data.Topology = basetypes.NewStringValue(attributeValue.(string))
+			} else if attributeName == "topology" {
+				newFabric.Topology = basetypes.NewStringValue(attributeValue.(string))
 			} else if attributeName == "location" {
 				newFabric.Location = basetypes.NewStringValue(attributeValue.(string))
 			} else if attributeName == "address" {
@@ -427,9 +432,9 @@ func getFabricJsonPayload(ctx context.Context, diags *diag.Diagnostics, data *Fa
 	// 	payloadMap["enabled"] = data.Enabled.ValueBool()
 	// }
 
-	// if !data.Topology.IsNull() && !data.Topology.IsUnknown() {
-	// 	payloadMap["topology"] = data.Topology.ValueString()
-	// }
+	if !data.Topology.IsNull() && !data.Topology.IsUnknown() {
+		payloadMap["topology"] = data.Topology.ValueString()
+	}
 
 	if !data.Location.IsNull() && !data.Location.IsUnknown() {
 		payloadMap["location"] = data.Location.ValueString()

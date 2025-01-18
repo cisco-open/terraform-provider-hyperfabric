@@ -45,6 +45,8 @@ data "hyperfabric_fabric" "example_fabric" {
   * `modified_by` - (string) The user that modified this object last.
   * `revision_id` - (string) An integer that represent the current revision of the object.
 * `description` - (string) The description is a user defined field to store notes about the Fabric.
+* `topology` - (string) The topology type of the Fabric.
+    - Possible Values: `MESH`, `SPINE_LEAF`.
 * `address` - (string) The physical street address where the Fabric is located.
 * `city` - (string) The city in which the Fabric is located.
 * `country` - (string) The country in which the Fabric is located.

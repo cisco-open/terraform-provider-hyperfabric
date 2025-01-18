@@ -66,9 +66,11 @@ resource "hyperfabric_fabric" "full_example_fabric" {
 * `name` - (string) The name of the Fabric.
 
 ### Optional ###
-  
 
 * `description` - (string) The description is a user defined field to store notes about the Fabric.
+* `topology` - (string) The topology type of the Fabric.
+    - Default: `MESH`
+    - Valid Values: `MESH`, `SPINE_LEAF`.
 * `address` - (string) The physical street address where the Fabric is located.
 * `city` - (string) The city in which the Fabric is located.
 * `country` - (string) The country in which the Fabric is located.

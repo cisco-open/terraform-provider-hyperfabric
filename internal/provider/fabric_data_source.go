@@ -57,10 +57,10 @@ func (d *FabricDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			// 	MarkdownDescription: "The enabled state of the Fabric.",
 			// 	Computed:            true,
 			// },
-			// "topology": schema.StringAttribute{
-			// 	MarkdownDescription: "The topology used by the Fabric.",
-			// 	Computed:            true,
-			// },
+			"topology": schema.StringAttribute{
+				MarkdownDescription: "The topology used by the Fabric.",
+				Computed:            true,
+			},
 			"location": schema.StringAttribute{
 				MarkdownDescription: "The location of the Fabric.",
 				Computed:            true,
