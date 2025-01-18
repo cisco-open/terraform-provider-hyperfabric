@@ -58,7 +58,7 @@ data "hyperfabric_node_management_port" "example_node_management_port" {
   - Possible Values: `CONFIG_TYPE_STATIC`, `CONFIG_TYPE_DHCP`.
 * `ipv6_address` - (string) The IPv6 address for the Management Port of the Node.
 * `ipv6_gateway` - (string) The IPv6 gateway address for the Management Port of the Node.
-* `metadata` - (map) A map of the Metadata of the Node:
+* `metadata` - (map) A map of the Metadata of the Node Management Port:
   * `created_at` - (string) The timestamp when this object was created in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.
   * `created_by` - (string) The user that created this object.
   * `modified_at` - (string) The timestamp when this object was last modified in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.

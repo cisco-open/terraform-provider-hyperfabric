@@ -92,7 +92,7 @@ resource "hyperfabric_node_port" "full_example_node_port" {
 * `sub_interfaces_count` - (string) The number of sub-interfaces of the Port of the Node.
 * `vlan_ids` - (list of strings) A list of Vlan IDs used by the Port of the Node.
 * `vnis` - (list of strings) A list of VNIs used by the Port of the Node.
-* `metadata` - (map) A map of the Metadata of the Node:
+* `metadata` - (map) A map of the Metadata of the Node Port:
   * `created_at` - (string) The timestamp when this object was created in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.
   * `created_by` - (string) The user that created this object.
   * `modified_at` - (string) The timestamp when this object was last modified in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.

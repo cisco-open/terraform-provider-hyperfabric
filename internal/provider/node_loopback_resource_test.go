@@ -67,22 +67,6 @@ func TestAccNodeLoopbackResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "annotations.#", "2"),
 				),
 			},
-			// Update with minimum config and different VRF
-			{
-				PreConfig: func() {
-					fmt.Println("= RUNNING: Node Loopback - Update with minimum config and verify config is unchanged.")
-				},
-				Config: testNodeLoopbackResourceHclConfig(fabricName, loopbackName, "test2", "minimal"),
-				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "name", loopbackName),
-					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "description", "Loopback for BGP Peering"),
-					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "ipv4_address", "10.1.0.1"),
-					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "ipv6_address", "2001:1::1"),
-					resource.TestCheckResourceAttrSet("hyperfabric_node_loopback.test", "vrf_id"),
-					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "labels.#", "2"),
-					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "annotations.#", "2"),
-				),
-			},
 			// ImportState testing with pre-existing Id.
 			{
 				PreConfig: func() {
@@ -101,6 +85,23 @@ func TestAccNodeLoopbackResource(t *testing.T) {
 				ImportState:       true,
 				ImportStateVerify: true,
 				ImportStateId:     fabricName + "/nodes/node1/loopbacks/" + loopbackName,
+			},
+			// Update with all config and verify provided values but reset vrf_id
+			{
+				PreConfig: func() {
+					fmt.Println("= RUNNING: Node Loopback - Update with all config and verify provided values but change vrf_id")
+				},
+				Config:             testNodeLoopbackResourceHclConfig(fabricName, loopbackName, "test2", "full"),
+				ExpectNonEmptyPlan: false,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "name", loopbackName),
+					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "description", "Loopback for BGP Peering"),
+					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "ipv4_address", "10.1.0.1"),
+					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "ipv6_address", "2001:1::1"),
+					resource.TestCheckResourceAttrSet("hyperfabric_node_loopback.test", "vrf_id"),
+					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "labels.#", "2"),
+					resource.TestCheckResourceAttr("hyperfabric_node_loopback.test", "annotations.#", "2"),
+				),
 			},
 			// Update with config containing all optional attributes with empty values and verify config is cleared.
 			{

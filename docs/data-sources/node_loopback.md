@@ -43,7 +43,7 @@ data "hyperfabric_node_loopback" "example_node_loopback" {
 * `ipv4_address` - (string) The IPv4 address configured on the Loopback.
 * `ipv6_address` - (string) The IPv6 address configured on the Loopback.
 * `vrf_id` - (string) The `vrf_id` to associate with the Loopback of the Node.
-* `metadata` - (map) A map of the Metadata of the Node:
+* `metadata` - (map) A map of the Metadata of the Node Loopback:
   * `created_at` - (string) The timestamp when this object was created in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.
   * `created_by` - (string) The user that created this object.
   * `modified_at` - (string) The timestamp when this object was last modified in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.

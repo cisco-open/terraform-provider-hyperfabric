@@ -104,7 +104,7 @@ resource "hyperfabric_node_management_port" "full_example_node_management_port" 
 * `connected_state` - (string) The connected state denoting if the port has ever successfully connected to the service.
   - Possible Values: `CONNECTED_STATE_NOT_CONNECTED`, `CONNECTED_STATE_CONNECTED`.
 * `proxy_credential_id` - (string) The unique identifier (id) of the set of credentials for the proxy.
-* `metadata` - (map) A map of the Metadata of the Node:
+* `metadata` - (map) A map of the Metadata of the Node Management Port:
   * `created_at` - (string) The timestamp when this object was created in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.
   * `created_by` - (string) The user that created this object.
   * `modified_at` - (string) The timestamp when this object was last modified in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.

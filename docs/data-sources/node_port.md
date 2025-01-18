@@ -58,7 +58,7 @@ data "hyperfabric_node_port" "example_node_port" {
 * `vlan_ids` - (list of strings) A list of Vlan IDs used by the Port of the Node.
 * `vnis` - (list of strings) A list of VNIs used by the Port of the Node.
 * `vrf_id` - (string) The `vrf_id` to associate with the Port of the Node.
-* `metadata` - (map) A map of the Metadata of the Node:
+* `metadata` - (map) A map of the Metadata of the Node Port:
   * `created_at` - (string) The timestamp when this object was created in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.
   * `created_by` - (string) The user that created this object.
   * `modified_at` - (string) The timestamp when this object was last modified in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.
