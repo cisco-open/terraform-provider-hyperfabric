@@ -27,3 +27,34 @@ resource "hyperfabric_node_loopback" "node1_loopback11" {
     }
   ]
 }
+
+resource "hyperfabric_node_sub_interface" "node1_Ethernet1_10_100" {
+  node_id = hyperfabric_node.node1.id
+  name = "Ethernet1_10.100"
+}
+
+resource "hyperfabric_node_sub_interface" "node1_Ethernet1_10_101" {
+  node_id        = hyperfabric_node.node1.id
+  name           = "Ethernet1_10.101"
+  description    = "Loopback for BGP peering"
+  enabled        = true
+  ipv4_addresses = ["10.4.0.1/24"]
+  ipv6_addresses = ["2004:1::1/64", "2005:1::1/64"]
+	vlan_id        = 200
+  vrf_id         = hyperfabric_vrf.vrf1.vrf_id
+	labels         = [
+		"sj01-1-101-AAA01",
+		"blue"
+	]
+	annotations    = [
+		{
+			name      = "color"
+			value     = "blue"
+		},
+		{
+			data_type = "UINT32"
+			name      = "rack"
+			value     = "1"
+		}
+	]
+}
