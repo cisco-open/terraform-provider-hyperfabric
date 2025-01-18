@@ -105,3 +105,18 @@ Then commit the changes to `go.mod` and `go.sum`.
 If you wish to work on the provider, you'll first need [Go](http://www.golang.org) installed on your machine (see [Requirements](#requirements) above).
 
 To compile the provider, run `go install`. This will build the provider and put the provider binary in the `$GOPATH/bin` directory.
+
+## Release Notes
+
+See the [Changelog](CHANGELOG.md) for full release notes.
+
+## Related Information
+
+For further information and guides, refer to the following:
+
+- [Cisco Hyperfabric DevNet Dev Center](https://developer.cisco.com/hyperfabric)
+- [Cisco Hyperfabric DevNet Documentation](https://developer.cisco.com/docs/hyperfabric)
+
+## License Information
+
+This collection is licensed under the [Mozilla Public License Version 2.0](LICENSE)
