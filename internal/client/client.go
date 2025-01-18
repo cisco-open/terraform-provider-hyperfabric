@@ -622,7 +622,7 @@ func (c *Client) DoRestRequest(path, method string, payload *gabs.Container) (*g
 		// Need error codes for:  Cannot create object, Cannot delete object
 		log.Printf("[DEBUG] The %s REST request to %s failed with HTTP Status Code %d, %s", strings.ToUpper(method), path, restResponse.StatusCode, restError.ToString())
 
-		if restResponse.StatusCode == 404 && strings.ToLower(method) == "get" {
+		if restResponse.StatusCode == 404 && (strings.ToLower(method) == "get" || strings.ToLower(method) == "delete") {
 			return nil, nil
 		} else {
 			diagError := getDiagError(
@@ -632,7 +632,7 @@ func (c *Client) DoRestRequest(path, method string, payload *gabs.Container) (*g
 			return nil, diagError
 		}
 	} else if err != nil {
-		if restResponse == nil || !(restResponse.StatusCode == 404 && strings.ToLower(method) == "get") {
+		if restResponse == nil || !(restResponse.StatusCode == 404 && (strings.ToLower(method) == "get" || strings.ToLower(method) == "delete")) {
 			diagError := getDiagError(
 				fmt.Sprintf("The %s REST request to %s failed with HTTP Status Code %d", strings.ToUpper(method), path, restResponse.StatusCode),
 				fmt.Sprintf("Err: %s. Please report this issue to the provider developers.", err),
