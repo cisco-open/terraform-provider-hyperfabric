@@ -120,7 +120,7 @@ func (d *NodePortDataSource) Schema(ctx context.Context, req datasource.SchemaRe
 			"vlan_ids": getVlanIdsSchemaAttribute(),
 			"vnis":     getVnisSchemaAttribute(),
 			"vrf_id": schema.StringAttribute{
-				MarkdownDescription: "The `vrf_id` to associate with the Port of the Node. Required when the Port roles include `ROUTED_PORT`.",
+				MarkdownDescription: "The `vrf_id` of a VRF to associate with the Port of the Node. Required when the Port roles include `ROUTED_PORT`.",
 				Computed:            true,
 			},
 			"metadata":    getMetadataSchemaAttribute(),

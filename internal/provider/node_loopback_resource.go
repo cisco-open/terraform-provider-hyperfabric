@@ -207,7 +207,7 @@ func (r *NodeLoopbackResource) Schema(ctx context.Context, req resource.SchemaRe
 				},
 			},
 			"vrf_id": schema.StringAttribute{
-				MarkdownDescription: "The `vrf_id` to associate with the Loopback of the Node.",
+				MarkdownDescription: "The `vrf_id` of a VRF to associate with the Loopback of the Node.",
 				Optional:            true,
 				Computed:            true,
 				PlanModifiers: []planmodifier.String{

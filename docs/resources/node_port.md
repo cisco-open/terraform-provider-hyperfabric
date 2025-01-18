@@ -62,7 +62,7 @@ resource "hyperfabric_node_port" "full_example_node_port" {
 * `ipv4_addresses` - (list of strings) A list of IPv4 addresses with subnet mask to be configured on the Port. Requires the `ROUTED_PORT` role to be configured in `roles` and the `vrf_id` to be set.
 * `ipv6_addresses` - (list of strings) A list of IPv6 addresses with subnet mask to be configured on the Port. Requires the `ROUTED_PORT` role to be configured in `roles` and the `vrf_id` to be set.
 * `prevent_forwarding` - (bool) Prevent traffic from being forwarded by the Port. Requires `enabled` to be set to `true` (equivalent to `Admin State` set to `Up`) and role to be one of `UNUSED_PORT`, `ROUTED_PORT` or `HOST_PORT`.
-* `vrf_id` - (string) The `vrf_id` to associate with the Port of the Node. Use the vrf_id attribute of the [hyperfabric_vrf](https://registry.terraform.io/providers/cisco-open/hyperfabric/latest/docs/resources/vrf) resource or [hyperfabric_vrf](https://registry.terraform.io/providers/cisco-open/hyperfabric/latest/docs/data-sources/vrf) data source.
+* `vrf_id` - (string) The `vrf_id` of a VRF to associate with the Port of the Node. Use the vrf_id attribute of the [hyperfabric_vrf](https://registry.terraform.io/providers/cisco-open/hyperfabric/latest/docs/resources/vrf) resource or [hyperfabric_vrf](https://registry.terraform.io/providers/cisco-open/hyperfabric/latest/docs/data-sources/vrf) data source.
   - Required when the Port `roles` include `ROUTED_PORT`.
 * `labels` - (list of strings) A list of user-defined labels that can be used for grouping and filtering objects.
 * `annotations` - (list of maps) A list of key-value annotations to store user-defined data including complex data such as JSON.
@@ -90,7 +90,7 @@ resource "hyperfabric_node_port" "full_example_node_port" {
 * `mtu` - (integer) The MTU of the Port of the Node.
 * `speed` - (string) The configured speed of the Port of the Node.
 * `sub_interfaces_count` - (string) The number of sub-interfaces of the Port of the Node.
-* `vlan_ids` - (list of strings) A list of Vlan IDs used by the Port of the Node.
+* `vlan_ids` - (list of strings) A list of VLAN IDs used by the Port of the Node.
 * `vnis` - (list of strings) A list of VNIs used by the Port of the Node.
 * `metadata` - (map) A map of the Metadata of the Node Port:
   * `created_at` - (string) The timestamp when this object was created in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.

@@ -81,7 +81,7 @@ resource "hyperfabric_node_loopback" "full_example_node_loopback" {
 * `description` - (string) The description is a user defined field to store notes about the Loopback of the Node.
 * `ipv4_address` - (string) An IPv4 address without a subnet mask to be configured on the Loopback. One of `ipv4_address` or `ipv6_address` is required.
 * `ipv6_address` - (string) An IPv6 address without a subnet mask to be configured on the Loopback. One of `ipv4_address` or `ipv6_address` is required.
-* `vrf_id` - (string) The `vrf_id` to associate with the Loopback of the Node. Use the vrf_id attribute of the [hyperfabric_vrf](https://registry.terraform.io/providers/cisco-open/hyperfabric/latest/docs/resources/vrf) resource or [hyperfabric_vrf](https://registry.terraform.io/providers/cisco-open/hyperfabric/latest/docs/data-sources/vrf) data source.
+* `vrf_id` - (string) The `vrf_id` of a VRF to associate with the Loopback of the Node. Use the vrf_id attribute of the [hyperfabric_vrf](https://registry.terraform.io/providers/cisco-open/hyperfabric/latest/docs/resources/vrf) resource or [hyperfabric_vrf](https://registry.terraform.io/providers/cisco-open/hyperfabric/latest/docs/data-sources/vrf) data source.
   - Default to the id of the Default-VRF.
 * `labels` - (list of strings) A list of user-defined labels that can be used for grouping and filtering objects.
 * `annotations` - (list of maps) A list of key-value annotations to store user-defined data including complex data such as JSON.

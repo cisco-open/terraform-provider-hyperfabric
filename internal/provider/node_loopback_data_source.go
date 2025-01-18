@@ -74,7 +74,7 @@ func (d *NodeLoopbackDataSource) Schema(ctx context.Context, req datasource.Sche
 				Computed:            true,
 			},
 			"vrf_id": schema.StringAttribute{
-				MarkdownDescription: "The `vrf_id` to associate with the Loopback of the Node. Required when the Loopback roles include `ROUTED_PORT`.",
+				MarkdownDescription: "The `vrf_id` of a VRF to associate with the Loopback of the Node. Required when the Loopback roles include `ROUTED_PORT`.",
 				Computed:            true,
 			},
 			"metadata":    getMetadataSchemaAttribute(),
