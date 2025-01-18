@@ -77,8 +77,6 @@ resource "hyperfabric_node" "full_example_node" {
   
 
 * `description` - (string) The description is a user defined field to store notes about the Node.
-* `enabled` - (bool) The enabled state of the Node.
-  - Default: `true`
 * `serial_number` - (string) The serial number of Device to be associated with the Node.
 * `location` - (string) The location is a user defined location of the Node.
 * `labels` - (list of strings) A list of user-defined labels that can be used for grouping and filtering objects.
@@ -98,6 +96,7 @@ resource "hyperfabric_node" "full_example_node" {
 ### Read-Only ###
 
 * `id` - (string) The unique identifier (id) of the Node in the Fabric.
+* `enabled` - (bool) The enabled state of the Node.
 * `position` - (string) The topological position of the Node in the Fabric.
 * `device_id` - (string) The unique identifier (id) of the Device associated with the Node.
 * `metadata` - (map) A map of the Metadata of the Node:

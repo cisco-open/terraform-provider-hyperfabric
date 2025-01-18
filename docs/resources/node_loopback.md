@@ -30,7 +30,7 @@ The configuration snippet below creates a Loopback of a Node with only the requi
 resource "hyperfabric_node_loopback" "example_node_loopback" {
   node_id = hyperfabric_node.example_node.id
   name = "Loopback10"
-  ipv4_address = "10.1.0.1/24"
+  ipv4_address = "10.1.0.1"
 }
 ```
 Or

@@ -53,8 +53,6 @@ resource "hyperfabric_connection" "full_example_connection" {
     node_id = hyperfabric_node.example_node2.node_id
     port_name = "Ethernet1_1"
   }
-  cable_type = "DAC"
-  cable_length = 7
   pluggable = "QDD-400-AOC7M"
 }
 ```
@@ -88,9 +86,9 @@ resource "hyperfabric_connection" "full_example_connection" {
   
 
 * `description` - (string) The description is a user defined field to store notes about the Connection.
-* `cable_type` - (string) The type of cable used for the Connection.
+<!-- * `cable_type` - (string) The type of cable used for the Connection.
   - Valid Values: `DAC`, `FIBER`.
-* `cable_length` - (string) The length of the cable used for the Connection.
+* `cable_length` - (string) The length of the cable used for the Connection. -->
 * `pluggable` - (string) The type of pluggable used for the Connection.
 <!-- * `labels` - (list of strings) A list of user-defined labels that can be used for grouping and filtering objects.
 * `annotations` - (list of maps) A list of key-value annotations to store user-defined data including complex data such as JSON.

@@ -1,5 +1,5 @@
 data hyperfabric_device "hyperfabric_device" {
-  serial_number = "TFAB31204500"
+  serial_number = "TFAB49304191"
 }
 
 output "datasource_device_leaf1_device_id" {

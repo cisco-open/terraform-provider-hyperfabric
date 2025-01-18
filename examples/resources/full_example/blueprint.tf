@@ -60,7 +60,6 @@ resource "hyperfabric_node" "node2" {
   description = "The 2nd Leaf of this Fabric2"
   model_name  = "HF6100-32D"
   roles       = ["LEAF"]
-  enabled     = false
 }
 
 
@@ -84,7 +83,6 @@ resource "hyperfabric_node" "node3" {
       data_type = "STRING"
     }
   ]
-  enabled = true
 }
 
 resource "hyperfabric_node_management_port" "node3" {
@@ -133,7 +131,6 @@ resource "hyperfabric_node" "node4" {
   name       = "fab1-spine2"
   model_name = "HF6100-32D"
   roles      = ["SPINE"]
-  enabled    = true
 }
 
 resource "hyperfabric_node_management_port" "node4" {
@@ -176,8 +173,6 @@ resource "hyperfabric_connection" "node1-node4" {
     port_name = "Ethernet1_1"
   }
   description  = "Connection between node1 and node4"
-  cable_type   = "DAC"
-  cable_length = 7
   pluggable    = "SFP-10G-AOC7M"
 }
 
