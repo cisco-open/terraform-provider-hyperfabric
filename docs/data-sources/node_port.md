@@ -38,7 +38,7 @@ data "hyperfabric_node_port" "example_node_port" {
 
 ### Read-Only ###
 
-* `id` - (string) The unique identifier (id) of the Node in the Fabric.
+* `id` - (string) The unique identifier (id) of the Port of the Node in the Fabric.
 * `index` - (integer) The index number of the Port of the Node.
 * `linecard` - (integer) The linecard index number of the Port of the Node.
 * `description` - (string) The description is a user defined field to store notes about the Port of the Node.

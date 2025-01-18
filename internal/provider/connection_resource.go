@@ -14,18 +14,15 @@ import (
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/cisco-open/terraform-provider-hyperfabric/internal/client"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/float64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -46,17 +43,17 @@ type ConnectionResource struct {
 
 // ConnectionResourceModel describes the resource data model.
 type ConnectionResourceModel struct {
-	Id           types.String  `tfsdk:"id"`
-	ConnectionId types.String  `tfsdk:"connection_id"`
-	FabricId     types.String  `tfsdk:"fabric_id"`
-	Description  types.String  `tfsdk:"description"`
-	CableType    types.String  `tfsdk:"cable_type"`
-	CableLength  types.Float64 `tfsdk:"cable_length"`
-	Pluggable    types.String  `tfsdk:"pluggable"`
-	Local        types.Object  `tfsdk:"local"`
-	Remote       types.Object  `tfsdk:"remote"`
-	OsType       types.String  `tfsdk:"os_type"`
-	Unrecognized types.Bool    `tfsdk:"unrecognized"`
+	Id           types.String `tfsdk:"id"`
+	ConnectionId types.String `tfsdk:"connection_id"`
+	FabricId     types.String `tfsdk:"fabric_id"`
+	Description  types.String `tfsdk:"description"`
+	// CableType    types.String  `tfsdk:"cable_type"`
+	// CableLength  types.Float64 `tfsdk:"cable_length"`
+	Pluggable    types.String `tfsdk:"pluggable"`
+	Local        types.Object `tfsdk:"local"`
+	Remote       types.Object `tfsdk:"remote"`
+	OsType       types.String `tfsdk:"os_type"`
+	Unrecognized types.Bool   `tfsdk:"unrecognized"`
 	// Metadata    types.Object `tfsdk:"metadata"`
 	// Labels        types.Set    `tfsdk:"labels"`
 	// Annotations types.Set    `tfsdk:"annotations"`
@@ -68,8 +65,8 @@ func getEmptyConnectionResourceModel() *ConnectionResourceModel {
 		ConnectionId: basetypes.NewStringNull(),
 		FabricId:     basetypes.NewStringNull(),
 		Description:  basetypes.NewStringNull(),
-		CableType:    basetypes.NewStringValue("DAC"),
-		CableLength:  basetypes.NewFloat64Null(),
+		// CableType:    basetypes.NewStringValue("DAC"),
+		// CableLength:  basetypes.NewFloat64Null(),
 		Pluggable:    basetypes.NewStringNull(),
 		Local:        basetypes.NewObjectNull(LocalRemoteConnectionResourceModelAttributeType()),
 		Remote:       basetypes.NewObjectNull(LocalRemoteConnectionResourceModelAttributeType()),
@@ -100,13 +97,13 @@ func getNewConnectionResourceModelFromData(data *ConnectionResourceModel) *Conne
 		newConnection.Description = data.Description
 	}
 
-	if !data.CableType.IsNull() && !data.CableType.IsUnknown() {
-		newConnection.CableType = data.CableType
-	}
+	// if !data.CableType.IsNull() && !data.CableType.IsUnknown() {
+	// 	newConnection.CableType = data.CableType
+	// }
 
-	if !data.CableLength.IsNull() && !data.CableLength.IsUnknown() {
-		newConnection.CableLength = data.CableLength
-	}
+	// if !data.CableLength.IsNull() && !data.CableLength.IsUnknown() {
+	// 	newConnection.CableLength = data.CableLength
+	// }
 
 	if !data.Pluggable.IsNull() && !data.Pluggable.IsUnknown() {
 		newConnection.Pluggable = data.Pluggable
@@ -285,28 +282,28 @@ func (r *ConnectionResource) Schema(ctx context.Context, req resource.SchemaRequ
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"cable_type": schema.StringAttribute{
-				MarkdownDescription: "The type of cable used for the Connection.",
-				Optional:            true,
-				Computed:            true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-					SetToStringNullWhenStateIsNullPlanIsUnknownDuringUpdate(),
-					stringplanmodifier.RequiresReplace(),
-				},
-				Validators: []validator.String{
-					stringvalidator.OneOf([]string{"DAC", "FIBER"}...),
-				},
-			},
-			"cable_length": schema.Float64Attribute{
-				MarkdownDescription: "The length of the cable used for the Connection.",
-				Optional:            true,
-				Computed:            true,
-				PlanModifiers: []planmodifier.Float64{
-					float64planmodifier.UseStateForUnknown(),
-					float64planmodifier.RequiresReplace(),
-				},
-			},
+			// "cable_type": schema.StringAttribute{
+			// 	MarkdownDescription: "The type of cable used for the Connection.",
+			// 	Optional:            true,
+			// 	Computed:            true,
+			// 	PlanModifiers: []planmodifier.String{
+			// 		stringplanmodifier.UseStateForUnknown(),
+			// 		SetToStringNullWhenStateIsNullPlanIsUnknownDuringUpdate(),
+			// 		stringplanmodifier.RequiresReplace(),
+			// 	},
+			// 	Validators: []validator.String{
+			// 		stringvalidator.OneOf([]string{"DAC", "FIBER"}...),
+			// 	},
+			// },
+			// "cable_length": schema.Float64Attribute{
+			// 	MarkdownDescription: "The length of the cable used for the Connection.",
+			// 	Optional:            true,
+			// 	Computed:            true,
+			// 	PlanModifiers: []planmodifier.Float64{
+			// 		float64planmodifier.UseStateForUnknown(),
+			// 		float64planmodifier.RequiresReplace(),
+			// 	},
+			// },
 			"pluggable": schema.StringAttribute{
 				MarkdownDescription: "The type of pluggable used for the Connection.",
 				Optional:            true,
@@ -512,10 +509,10 @@ func getAndSetConnectionAttributes(ctx context.Context, diags *diag.Diagnostics,
 				newConnection.Id = basetypes.NewStringValue(fmt.Sprintf("%s/connections/%s", newConnection.FabricId.ValueString(), newConnection.ConnectionId.ValueString()))
 			} else if attributeName == "description" {
 				newConnection.Description = basetypes.NewStringValue(attributeValue.(string))
-			} else if attributeName == "cableType" {
-				newConnection.CableType = basetypes.NewStringValue(attributeValue.(string))
-			} else if attributeName == "cableLength" {
-				newConnection.CableLength = basetypes.NewFloat64Value(attributeValue.(float64))
+				// } else if attributeName == "cableType" {
+				// 	newConnection.CableType = basetypes.NewStringValue(attributeValue.(string))
+				// } else if attributeName == "cableLength" {
+				// 	newConnection.CableLength = basetypes.NewFloat64Value(attributeValue.(float64))
 			} else if attributeName == "pluggable" {
 				newConnection.Pluggable = basetypes.NewStringValue(attributeValue.(string))
 			} else if attributeName == "local" {
@@ -548,13 +545,13 @@ func getConnectionJsonPayload(ctx context.Context, diags *diag.Diagnostics, data
 		payloadMap["description"] = data.Description.ValueString()
 	}
 
-	if !data.CableType.IsNull() && !data.CableType.IsUnknown() {
-		payloadMap["cableType"] = data.CableType.ValueString()
-	}
+	// if !data.CableType.IsNull() && !data.CableType.IsUnknown() {
+	// 	payloadMap["cableType"] = data.CableType.ValueString()
+	// }
 
-	if !data.CableLength.IsNull() && !data.CableLength.IsUnknown() {
-		payloadMap["cableLength"] = data.CableLength.ValueFloat64()
-	}
+	// if !data.CableLength.IsNull() && !data.CableLength.IsUnknown() {
+	// 	payloadMap["cableLength"] = data.CableLength.ValueFloat64()
+	// }
 
 	if !data.Pluggable.IsNull() && !data.Pluggable.IsUnknown() {
 		payloadMap["pluggable"] = data.Pluggable.ValueString()

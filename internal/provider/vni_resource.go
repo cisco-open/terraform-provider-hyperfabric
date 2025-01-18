@@ -476,7 +476,7 @@ func getAndSetVniAttributes(ctx context.Context, diags *diag.Diagnostics, client
 				newVni.IsDefault = basetypes.NewBoolValue(attributeValue.(bool))
 				// } else if attributeName == "isL3" {
 				// 	newVni.IsL3 = basetypes.NewBoolValue(attributeValue.(bool))
-			} else if attributeName == "vrfId" && attributeValue.(string) != "" {
+			} else if attributeName == "vrfId" {
 				newVni.VrfId = basetypes.NewStringValue(attributeValue.(string))
 			} else if attributeName == "vni" {
 				newVni.Vni = basetypes.NewFloat64Value(attributeValue.(float64))
@@ -535,7 +535,7 @@ func getVniJsonPayload(ctx context.Context, diags *diag.Diagnostics, data *VniRe
 		payloadMap["vrfId"] = data.VrfId.ValueString()
 	}
 
-	if !data.Vni.IsNull() && !data.Vni.IsUnknown() && action == "create" {
+	if !data.Vni.IsNull() && !data.Vni.IsUnknown() {
 		payloadMap["vni"] = data.Vni.ValueFloat64()
 	}
 

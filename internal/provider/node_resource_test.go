@@ -144,7 +144,6 @@ resource "hyperfabric_node" "test" {
 	model_name  = "HF6100-32D"
     roles       = ["LEAF"]
 	description = "This node is powered by Cisco Nexus Hyperfabric"
-	enabled     = true
 	location    = "sj01-1-101-AAA01"
 	labels = [
 		"sj01-1-101-AAA01",
@@ -174,7 +173,6 @@ resource "hyperfabric_node" "test" {
 	name        = "%[2]s"
 	model_name  = "HF6100-32D"
     roles       = ["LEAF"]
-	enabled     = true
 	description = ""
 	location    = ""
 	labels = []
@@ -190,7 +188,6 @@ resource "hyperfabric_node" "test" {
     fabric_id = hyperfabric_fabric.test.id
 	name = "%[2]s"
 	model_name = "HF6100-32D"
-    roles = ["LEAF"]
 }
 `, fabricName, name)
 	}

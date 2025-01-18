@@ -20,9 +20,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -201,9 +201,7 @@ func (r *NodeResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 			},
 			"enabled": schema.BoolAttribute{
 				MarkdownDescription: "The enabled state of the Node.",
-				Optional:            true,
 				Computed:            true,
-				Default:             booldefault.StaticBool(true),
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
@@ -256,7 +254,11 @@ func (r *NodeResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 func getRolesSchemaAttribute() schema.SetAttribute {
 	return schema.SetAttribute{
 		MarkdownDescription: `A set of roles for a Node.`,
-		Required:            true,
+		Optional:            true,
+		Computed:            true,
+		PlanModifiers: []planmodifier.Set{
+			setplanmodifier.UseStateForUnknown(),
+		},
 		Validators: []validator.Set{
 			setvalidator.ValueStringsAre(stringvalidator.OneOf([]string{"LEAF", "SPINE"}...)),
 		},
@@ -494,6 +496,7 @@ func getNodeJsonPayload(ctx context.Context, diags *diag.Diagnostics, data *Node
 		payloadMap["description"] = data.Description.ValueString()
 	}
 
+	// FIXME: REMOVE when PUT issue fixed
 	if !data.Enabled.IsNull() && !data.Enabled.IsUnknown() {
 		payloadMap["enabled"] = data.Enabled.ValueBool()
 	}

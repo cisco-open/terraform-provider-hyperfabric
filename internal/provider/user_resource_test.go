@@ -52,7 +52,7 @@ func TestAccUserResource(t *testing.T) {
 				PreConfig: func() {
 					fmt.Println("= RUNNING: User - Update with minimum config and verify config is unchanged.")
 				},
-				Config:             testUserResourceHclConfig(email, "minimal"),
+				Config:             testUserResourceHclConfig(email, "minimal+"),
 				ExpectNonEmptyPlan: false,
 				PlanOnly:           true,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -100,7 +100,7 @@ func TestAccUserResource(t *testing.T) {
 				PreConfig: func() {
 					fmt.Println("= RUNNING: User - Run Plan Only with minimal config and check that plan is empty.")
 				},
-				Config:             testUserResourceHclConfig(email, "minimal"),
+				Config:             testUserResourceHclConfig(email, "minimal+"),
 				PlanOnly:           true,
 				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -115,10 +115,10 @@ func testUserResourceHclConfig(email string, configType string) string {
 	if configType == "full" {
 		return fmt.Sprintf(`
 resource "hyperfabric_user" "test" {
-	email = "%[1]s"
-	enabled     = true
+	email   = "%[1]s"
+	enabled = true
 	role    = "ADMIN"
-	labels = [
+	labels  = [
 		"sj01-1-101-AAA01",
 		"blue"
 	]
@@ -127,10 +127,17 @@ resource "hyperfabric_user" "test" {
 	} else if configType == "clear" {
 		return fmt.Sprintf(`
 resource "hyperfabric_user" "test" {
-	email = "%[1]s"
-	enabled     = true
+	email   = "%[1]s"
+	enabled = true
 	role    = "ADMIN"
-	labels = []
+	labels  = []
+}
+`, email)
+	} else if configType == "minimal+" {
+		return fmt.Sprintf(`
+resource "hyperfabric_user" "test" {
+	email = "%[1]s"
+	role  = "ADMIN"
 }
 `, email)
 	} else {

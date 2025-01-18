@@ -69,7 +69,7 @@ func getEmptyUserResourceModel() *UserResourceModel {
 	}
 }
 
-func getNewUserResourceModel(data *UserResourceModel) *UserResourceModel {
+func getNewUserResourceModelFromData(data *UserResourceModel) *UserResourceModel {
 	newUser := getEmptyUserResourceModel()
 
 	if !data.Id.IsNull() && !data.Id.IsUnknown() {
@@ -332,49 +332,37 @@ func (r *UserResource) ImportState(ctx context.Context, req resource.ImportState
 }
 
 func getAndSetUserAttributes(ctx context.Context, diags *diag.Diagnostics, client *client.Client, data *UserResourceModel) {
-	// requestData := DoRestRequest(ctx, diags, client, fmt.Sprintf("/api/v1/users/%s", data.Id.ValueString()), "GET", nil)
-	requestData := DoRestRequest(ctx, diags, client, "/api/v1/users", "GET", nil)
+	requestData := DoRestRequest(ctx, diags, client, fmt.Sprintf("/api/v1/users/%s", data.Id.ValueString()), "GET", nil)
+	// requestData := DoRestRequest(ctx, diags, client, "/api/v1/users", "GET", nil)
 	if diags.HasError() {
 		return
 	}
 
-	newUser := *getNewUserResourceModel(data)
+	newUser := *getNewUserResourceModelFromData(data)
 	// newUser.Id = data.Id
 	// newUser.Email = data.Email
 
 	if requestData.Data() != nil {
-		requestMap := requestData.Data().(map[string]interface{})
-		for _, users := range requestMap {
-			for _, user := range users.([]interface{}) {
-				newUser = *getEmptyUserResourceModel()
-				for attributeName, attributeValue := range user.(map[string]interface{}) {
-					if attributeName == "id" && (data.Id.IsNull() || data.Id.IsUnknown() || data.Id.ValueString() == "") {
-						newUser.Id = basetypes.NewStringValue(attributeValue.(string))
-					} else if attributeName == "email" {
-						newUser.Email = basetypes.NewStringValue(attributeValue.(string))
-					} else if attributeName == "provider" {
-						newUser.Provider = basetypes.NewStringValue(attributeValue.(string))
-					} else if attributeName == "lastLogin" {
-						newUser.LastLogin = basetypes.NewStringValue(attributeValue.(string))
-					} else if attributeName == "enabled" {
-						newUser.Enabled = basetypes.NewBoolValue(attributeValue.(bool))
-					} else if attributeName == "role" {
-						newUser.Role = basetypes.NewStringValue(attributeValue.(string))
-					} else if attributeName == "metadata" {
-						newUser.Metadata = NewMetadataObject(ctx, attributeValue.(map[string]interface{}))
-					} else if attributeName == "labels" {
-						newUser.Labels = NewSetString(ctx, attributeValue.([]interface{}))
-						// } else if attributeName == "annotations" {
-						// 	newUser.Annotations = NewAnnotationsSet(ctx, attributeValue.([]interface{}))
-					}
-				}
-				if newUser.Email.ValueString() == data.Email.ValueString() {
-					newUser.Id = data.Id
-					break
-				}
-			}
-			if newUser.Email.ValueString() != data.Email.ValueString() {
-				newUser.Id = basetypes.NewStringNull()
+		attributes := requestData.Data().(map[string]interface{})
+		for attributeName, attributeValue := range attributes {
+			if attributeName == "id" && (data.Id.IsNull() || data.Id.IsUnknown() || data.Id.ValueString() == "" || data.Id.ValueString() != attributeValue.(string)) {
+				newUser.Id = basetypes.NewStringValue(attributeValue.(string))
+			} else if attributeName == "email" {
+				newUser.Email = basetypes.NewStringValue(attributeValue.(string))
+			} else if attributeName == "provider" {
+				newUser.Provider = basetypes.NewStringValue(attributeValue.(string))
+			} else if attributeName == "lastLogin" {
+				newUser.LastLogin = basetypes.NewStringValue(attributeValue.(string))
+			} else if attributeName == "enabled" {
+				newUser.Enabled = basetypes.NewBoolValue(attributeValue.(bool))
+			} else if attributeName == "role" {
+				newUser.Role = basetypes.NewStringValue(attributeValue.(string))
+			} else if attributeName == "metadata" {
+				newUser.Metadata = NewMetadataObject(ctx, attributeValue.(map[string]interface{}))
+			} else if attributeName == "labels" {
+				newUser.Labels = NewSetString(ctx, attributeValue.([]interface{}))
+				// } else if attributeName == "annotations" {
+				// 	newUser.Annotations = NewAnnotationsSet(ctx, attributeValue.([]interface{}))
 			}
 		}
 	} else {
@@ -399,7 +387,7 @@ func getUserJsonPayload(ctx context.Context, diags *diag.Diagnostics, data *User
 		payloadMap["enabled"] = data.Enabled.ValueBool()
 	}
 
-	if !data.Labels.IsNull() && !data.Labels.IsUnknown() && action == "create" {
+	if !data.Labels.IsNull() && !data.Labels.IsUnknown() {
 		payloadMap["labels"] = getSetStringJsonPayload(ctx, data.Labels)
 	}
 

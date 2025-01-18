@@ -386,7 +386,7 @@ func getAndSetBearerTokenAttributes(ctx context.Context, diags *diag.Diagnostics
 	if requestData.Data() != nil {
 		attributes := requestData.Data().(map[string]interface{})
 		for attributeName, attributeValue := range attributes {
-			if attributeName == "tokenId" && (data.Id.IsNull() || data.Id.IsUnknown() || data.Id.ValueString() == "" || data.Id.ValueString() == attributeValue.(string)) {
+			if attributeName == "tokenId" && (data.Id.IsNull() || data.Id.IsUnknown() || data.Id.ValueString() == "" || data.Id.ValueString() != attributeValue.(string)) {
 				newBearerToken.Id = basetypes.NewStringValue(attributeValue.(string))
 				newBearerToken.TokenId = basetypes.NewStringValue(attributeValue.(string))
 			} else if attributeName == "name" {

@@ -48,8 +48,6 @@ func TestAccConnectionResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "remote.port_name", "Ethernet1_1"),
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "remote.node_name", "node2"),
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "description", "This connection is powered by Cisco Nexus Hyperfabric"),
-					resource.TestCheckResourceAttr("hyperfabric_connection.test", "cable_type", "DAC"),
-					resource.TestCheckResourceAttr("hyperfabric_connection.test", "cable_length", "7"),
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "pluggable", "QDD-400-AOC7M"),
 				),
 			},
@@ -67,8 +65,6 @@ func TestAccConnectionResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "remote.port_name", "Ethernet1_1"),
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "remote.node_name", "node2"),
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "description", "This connection is powered by Cisco Nexus Hyperfabric"),
-					resource.TestCheckResourceAttr("hyperfabric_connection.test", "cable_type", "DAC"),
-					resource.TestCheckResourceAttr("hyperfabric_connection.test", "cable_length", "7"),
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "pluggable", "QDD-400-AOC7M"),
 				),
 			},
@@ -104,8 +100,6 @@ func TestAccConnectionResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "remote.port_name", "Ethernet1_1"),
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "remote.node_name", "node2"),
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "description", ""),
-					resource.TestCheckResourceAttr("hyperfabric_connection.test", "cable_type", "DAC"),
-					resource.TestCheckResourceAttr("hyperfabric_connection.test", "cable_length", "0"),
 					resource.TestCheckResourceAttr("hyperfabric_connection.test", "pluggable", ""),
 				),
 			},
@@ -157,8 +151,6 @@ resource "hyperfabric_connection" "test" {
         port_name = "Ethernet1_1"
     }
     description = "This connection is powered by Cisco Nexus Hyperfabric"
-    cable_type = "DAC"
-    cable_length = 7
     pluggable = "QDD-400-AOC7M"
 }
 `, fabricName)
@@ -190,8 +182,6 @@ resource "hyperfabric_connection" "test" {
         port_name = "Ethernet1_1"
     }
     description = ""
-    cable_type = "DAC"
-    cable_length = 0
     pluggable = ""
 }
 `, fabricName)

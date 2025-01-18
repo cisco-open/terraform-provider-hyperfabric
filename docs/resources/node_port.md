@@ -15,7 +15,6 @@ A Port is a front panel network interface of a Node used as Fabric Port to inter
 
 ## API Paths ##
 
-* `/fabrics/{fabricId|fabricName}/nodes/{nodeId|nodeName}/ports` `POST`
 * `/fabrics/{fabricId|fabricName}/nodes/{nodeId|nodeName}/ports/{portId|name}` `GET, PUT, DELETE`
 
 ## GUI Information ##
@@ -81,7 +80,7 @@ resource "hyperfabric_node_port" "full_example_node_port" {
 
 ### Read-Only ###
 
-* `id` - (string) The unique identifier (id) of the Node in the Fabric.
+* `id` - (string) The unique identifier (id) of a Port of the Node in the Fabric.
 * `index` - (integer) The index number of the Port of the Node.
 * `linecard` - (integer) The linecard index number of the Port of the Node.
 * `lldp_host` - (string) The name of host reported by LLDP connected to the Port of the Node.

@@ -26,10 +26,11 @@ func TestAccVniResource(t *testing.T) {
 				PreConfig: func() {
 					fmt.Println("= RUNNING: VNI - Create with minimum config and verify provided and default Hyperfabric values.")
 				},
-				Config:             testVniResourceHclConfig(fabricName, name, 0, "true", false, "minimal"),
+				Config:             testVniResourceHclConfig(fabricName, name, 0, "true", "", "minimal"),
 				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "name", name),
+					resource.TestCheckResourceAttrSet("hyperfabric_vni.test", "vni"),
 				),
 			},
 			// Update with all config except `vni` and verify provided values.
@@ -37,7 +38,7 @@ func TestAccVniResource(t *testing.T) {
 				PreConfig: func() {
 					fmt.Println("= RUNNING: VNI - Update with all config except `vni` and verify provided values.")
 				},
-				Config:             testVniResourceHclConfig(fabricName, name, 0, "true", false, "full"),
+				Config:             testVniResourceHclConfig(fabricName, name, 0, "true", "test", "full"),
 				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "name", name),
@@ -50,13 +51,13 @@ func TestAccVniResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "svi.ipv6_addresses.1", "2002::1/64"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.#", "3"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.node_id", "*"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.port_name", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.port_name", "Ethernet1_10"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.vlan_id", "103"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.node_name", "node1"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.port_name", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.node_id", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.port_name", "Ethernet1_11"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.vlan_id", "103"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.node_name", "node1"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.port_name", "Ethernet1_10"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.port_name", "Ethernet1_9"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.vlan_id", "103"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "labels.#", "2"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "annotations.#", "2"),
@@ -68,7 +69,7 @@ func TestAccVniResource(t *testing.T) {
 				PreConfig: func() {
 					fmt.Println("= RUNNING: VNI - Update with all config and verify provided values.")
 				},
-				Config:             testVniResourceHclConfig(fabricName, name, 169, "true", false, "full"),
+				Config:             testVniResourceHclConfig(fabricName, name, 169, "true", "test", "full"),
 				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "name", name),
@@ -82,13 +83,13 @@ func TestAccVniResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "svi.ipv6_addresses.1", "2002::1/64"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.#", "3"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.node_id", "*"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.port_name", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.port_name", "Ethernet1_10"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.vlan_id", "103"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.node_name", "node1"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.port_name", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.node_id", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.port_name", "Ethernet1_11"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.vlan_id", "103"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.node_name", "node1"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.port_name", "Ethernet1_10"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.port_name", "Ethernet1_9"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.vlan_id", "103"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "labels.#", "2"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "annotations.#", "2"),
@@ -100,7 +101,7 @@ func TestAccVniResource(t *testing.T) {
 				PreConfig: func() {
 					fmt.Println("= RUNNING: VNI - Update with minimum config and verify config is unchanged.")
 				},
-				Config:             testVniResourceHclConfig(fabricName, name, 0, "true", false, "minimal"),
+				Config:             testVniResourceHclConfig(fabricName, name, 0, "true", "", "minimal"),
 				PlanOnly:           true,
 				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -115,13 +116,13 @@ func TestAccVniResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "svi.ipv6_addresses.1", "2002::1/64"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.#", "3"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.node_id", "*"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.port_name", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.port_name", "Ethernet1_10"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.vlan_id", "103"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.node_name", "node1"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.port_name", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.node_id", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.port_name", "Ethernet1_11"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.vlan_id", "103"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.node_name", "node1"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.port_name", "Ethernet1_10"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.port_name", "Ethernet1_9"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.vlan_id", "103"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "labels.#", "2"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "annotations.#", "2"),
@@ -150,9 +151,9 @@ func TestAccVniResource(t *testing.T) {
 			// Update with all config and verify provided values but reset vrf_id
 			{
 				PreConfig: func() {
-					fmt.Println("= RUNNING: VNI - Update with all config and verify provided values.")
+					fmt.Println("= RUNNING: VNI - Update with all config and verify provided values but change vrf_id")
 				},
-				Config:             testVniResourceHclConfig(fabricName, name, 169, "false", false, "full"),
+				Config:             testVniResourceHclConfig(fabricName, name, 169, "false", "test2", "full"),
 				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "name", name),
@@ -166,13 +167,13 @@ func TestAccVniResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "svi.ipv6_addresses.1", "2002::1/64"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.#", "3"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.node_id", "*"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.port_name", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.port_name", "Ethernet1_10"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.vlan_id", "103"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.node_name", "node1"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.port_name", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.node_id", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.port_name", "Ethernet1_11"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.vlan_id", "103"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.node_name", "node1"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.port_name", "Ethernet1_10"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.port_name", "Ethernet1_9"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.vlan_id", "103"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "labels.#", "2"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "annotations.#", "2"),
@@ -182,9 +183,9 @@ func TestAccVniResource(t *testing.T) {
 			// Update with all config and verify provided values but svi.enabled = false
 			{
 				PreConfig: func() {
-					fmt.Println("= RUNNING: VNI - Update with all config and verify provided values.")
+					fmt.Println("= RUNNING: VNI - Update with all config and verify provided values but svi.enabled set to false")
 				},
-				Config:             testVniResourceHclConfig(fabricName, name, 169, "false", false, "full"),
+				Config:             testVniResourceHclConfig(fabricName, name, 169, "false", "test2", "full"),
 				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "name", name),
@@ -198,13 +199,13 @@ func TestAccVniResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "svi.ipv6_addresses.1", "2002::1/64"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.#", "3"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.node_id", "*"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.port_name", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.port_name", "Ethernet1_10"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.0.vlan_id", "103"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.node_name", "node1"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.port_name", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.node_id", "*"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.port_name", "Ethernet1_11"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.1.vlan_id", "103"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.node_name", "node1"),
-					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.port_name", "Ethernet1_10"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.port_name", "Ethernet1_9"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.2.vlan_id", "103"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "labels.#", "2"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "annotations.#", "2"),
@@ -216,7 +217,7 @@ func TestAccVniResource(t *testing.T) {
 				PreConfig: func() {
 					fmt.Println("= RUNNING: VNI - Update with config containing all optional attributes with empty values and verify config is cleared.")
 				},
-				Config:             testVniResourceHclConfig(fabricName, name, 169, "true", false, "clear"),
+				Config:             testVniResourceHclConfig(fabricName, name, 169, "true", "clear", "clear"),
 				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "name", name),
@@ -228,7 +229,7 @@ func TestAccVniResource(t *testing.T) {
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "members.#", "0"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "labels.#", "0"),
 					resource.TestCheckResourceAttr("hyperfabric_vni.test", "annotations.#", "0"),
-					resource.TestCheckNoResourceAttr("hyperfabric_vni.test", "vrf_id"),
+					resource.TestCheckResourceAttr("hyperfabric_vni.test", "vrf_id", ""),
 				),
 			},
 			// Run Plan Only with minimal config and check that plan is empty.
@@ -236,7 +237,7 @@ func TestAccVniResource(t *testing.T) {
 				PreConfig: func() {
 					fmt.Println("= RUNNING: VNI - Run Plan Only with minimal config and check that plan is empty.")
 				},
-				Config:             testVniResourceHclConfig(fabricName, name, 0, "true", false, "minimal"),
+				Config:             testVniResourceHclConfig(fabricName, name, 0, "true", "", "minimal"),
 				PlanOnly:           true,
 				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeAggregateTestCheckFunc(
@@ -247,15 +248,19 @@ func TestAccVniResource(t *testing.T) {
 	})
 }
 
-func testVniResourceHclConfig(fabricName string, name string, vni int64, sviEnabled string, vrf bool, configType string) string {
+func testVniResourceHclConfig(fabricName string, name string, vni int64, sviEnabled string, vrf string, configType string) string {
 	vniConfigLine := ""
 	if vni != 0 {
 		vniConfigLine = fmt.Sprintf("vni = %d", vni)
 	}
-	vrfConfigLine := "vrf_id = \"\""
-	if vrf {
-		vrfConfigLine = fmt.Sprintf("vrf_id = hyperfabric_vrf.test.vrf_id")
+
+	vrfConfigLine := ""
+	if vrf != "" {
+		vrfConfigLine = fmt.Sprintf("vrf_id = hyperfabric_vrf.%s.vrf_id", vrf)
+	} else if vrf == "clear" {
+		vrfConfigLine = "vrf_id = \"\""
 	}
+
 	if configType == "full" {
 		return fmt.Sprintf(`
 resource "hyperfabric_fabric" "test" {
@@ -274,6 +279,11 @@ resource "hyperfabric_vrf" "test" {
 	name = "Vrf1"
 }
 
+resource "hyperfabric_vrf" "test2" {
+    fabric_id = hyperfabric_fabric.test.id
+	name = "Vrf2"
+}
+
 resource "hyperfabric_vni" "test" {
     fabric_id   = hyperfabric_fabric.test.id
 	name        = "%[2]s"
@@ -287,17 +297,17 @@ resource "hyperfabric_vni" "test" {
 	members = [
 		{
 		node_id = "*"
-		port_name = "*"
+		port_name = "Ethernet1_11"
 		vlan_id = 103
 		},
 		{
-		node_id = hyperfabric_node.test.node_id
-		port_name = "*"
-		vlan_id   = 103
+		node_id = "*"
+		port_name = "Ethernet1_10"
+		vlan_id = 103
 		},
 		{
 		node_id   = hyperfabric_node.test.node_id
-		port_name = "Ethernet1_10"
+		port_name = "Ethernet1_9"
 		vlan_id   = 103
 		}
 	]
@@ -337,6 +347,11 @@ resource "hyperfabric_vrf" "test" {
 	name = "Vrf1"
 }
 
+resource "hyperfabric_vrf" "test2" {
+    fabric_id = hyperfabric_fabric.test.id
+	name = "Vrf2"
+}
+
 resource "hyperfabric_vni" "test" {
 	fabric_id   = hyperfabric_fabric.test.id
 	name        = "%[2]s"
@@ -365,6 +380,11 @@ resource "hyperfabric_node" "test" {
 resource "hyperfabric_vrf" "test" {
     fabric_id = hyperfabric_fabric.test.id
 	name = "Vrf1"
+}
+
+resource "hyperfabric_vrf" "test2" {
+    fabric_id = hyperfabric_fabric.test.id
+	name = "Vrf2"
 }
 
 resource "hyperfabric_vni" "test" {

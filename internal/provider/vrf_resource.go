@@ -415,7 +415,7 @@ func getAndSetVrfAttributes(ctx context.Context, diags *diag.Diagnostics, client
 				newVrf.Asn = basetypes.NewFloat64Value(attributeValue.(float64))
 			} else if attributeName == "vni" {
 				newVrf.Vni = basetypes.NewFloat64Value(attributeValue.(float64))
-			} else if attributeName == "rt" {
+			} else if attributeName == "routeTarget" {
 				newVrf.RouteTarget = basetypes.NewStringValue(attributeValue.(string))
 			} else if attributeName == "metadata" {
 				newVrf.Metadata = NewMetadataObject(ctx, attributeValue.(map[string]interface{}))
@@ -440,8 +440,8 @@ func getVrfJsonPayload(ctx context.Context, diags *diag.Diagnostics, data *VrfRe
 	}
 
 	// TO FIX: NEED TO BE REMOVE WHEN FIXED
-	if !data.FabricId.IsNull() && !data.FabricId.IsUnknown() {
-		payloadMap["fabricId"] = data.FabricId.ValueString()
+	if !data.VrfId.IsNull() && !data.VrfId.IsUnknown() {
+		payloadMap["id"] = data.VrfId.ValueString()
 	}
 
 	if !data.Description.IsNull() && !data.Description.IsUnknown() {

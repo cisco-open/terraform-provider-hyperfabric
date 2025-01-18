@@ -612,9 +612,7 @@ func (r *NodePortResource) Delete(ctx context.Context, req resource.DeleteReques
 
 	tflog.Debug(ctx, fmt.Sprintf("Delete of resource hyperfabric_node_port with id '%s'", data.Id.ValueString()))
 	checkAndSetNodePortIds(data)
-	// DoRestRequest(ctx, &resp.Diagnostics, r.client, fmt.Sprintf("/api/v1/fabrics/%s/ports/%s", data.NodeId.ValueString(), data.PortId.ValueString()), "DELETE", nil)
-	jsonPayload := getNodePortJsonPayload(ctx, &resp.Diagnostics, data, "delete")
-	DoRestRequest(ctx, &resp.Diagnostics, r.client, fmt.Sprintf("/api/v1/fabrics/%s/ports/%s", data.NodeId.ValueString(), data.Name.ValueString()), "PUT", jsonPayload)
+	DoRestRequest(ctx, &resp.Diagnostics, r.client, fmt.Sprintf("/api/v1/fabrics/%s/ports/%s", data.NodeId.ValueString(), data.Name.ValueString()), "DELETE", nil)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -637,12 +635,23 @@ func getAndSetNodePortAttributes(ctx context.Context, diags *diag.Diagnostics, c
 	}
 
 	newNodePort := *getNewNodePortResourceModelFromData(data)
+	node := getEmptyNodeResourceModel()
+	node.Id = newNodePort.NodeId
+	checkAndSetNodeIds(node)
 
 	if requestData.Data() != nil {
 		for attributeName, attributeValue := range requestData.Data().(map[string]interface{}) {
 			if attributeName == "id" && (data.PortId.IsNull() || data.PortId.IsUnknown() || data.PortId.ValueString() == "" || data.PortId.ValueString() != attributeValue.(string)) {
 				newNodePort.PortId = basetypes.NewStringValue(attributeValue.(string))
 				newNodePort.Id = basetypes.NewStringValue(fmt.Sprintf("%s/ports/%s", newNodePort.NodeId.ValueString(), newNodePort.PortId.ValueString()))
+			} else if attributeName == "fabricId" && (node.FabricId.IsNull() || node.FabricId.IsUnknown() || node.FabricId.ValueString() == "" || node.FabricId.ValueString() != attributeValue.(string)) {
+				node.FabricId = basetypes.NewStringValue(attributeValue.(string))
+				newNodePort.NodeId = basetypes.NewStringValue(fmt.Sprintf("%s/nodes/%s", node.FabricId.ValueString(), node.NodeId.ValueString()))
+				newNodePort.Id = basetypes.NewStringValue(fmt.Sprintf("%s/loopbacks/%s", newNodePort.NodeId.ValueString(), newNodePort.PortId.ValueString()))
+			} else if attributeName == "nodeId" && (node.NodeId.IsNull() || node.NodeId.IsUnknown() || node.NodeId.ValueString() == "" || node.NodeId.ValueString() != attributeValue.(string)) {
+				node.NodeId = basetypes.NewStringValue(attributeValue.(string))
+				newNodePort.NodeId = basetypes.NewStringValue(fmt.Sprintf("%s/nodes/%s", node.FabricId.ValueString(), node.NodeId.ValueString()))
+				newNodePort.Id = basetypes.NewStringValue(fmt.Sprintf("%s/loopbacks/%s", newNodePort.NodeId.ValueString(), newNodePort.PortId.ValueString()))
 			} else if attributeName == "name" {
 				newNodePort.Name = basetypes.NewStringValue(attributeValue.(string))
 			} else if attributeName == "description" {
@@ -747,12 +756,6 @@ func getNodePortJsonPayload(ctx context.Context, diags *diag.Diagnostics, data *
 	if action == "create" {
 		payloadList = append(payloadList, payloadMap)
 		payload = map[string]interface{}{"ports": payloadList}
-	} else if action == "delete" {
-		payload = map[string]interface{}{
-			"name":    data.Name.ValueString(),
-			"enabled": true,
-			"roles":   []string{"FABRIC_PORT"},
-		}
 	} else {
 		payload = payloadMap
 	}

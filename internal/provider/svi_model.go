@@ -9,15 +9,12 @@ package provider
 import (
 	"context"
 
-	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
@@ -55,12 +52,12 @@ func getSviSchemaAttribute() schema.SingleNestedAttribute {
 		PlanModifiers: []planmodifier.Object{
 			objectplanmodifier.UseStateForUnknown(),
 		},
-		Validators: []validator.Object{
-			// Validate this attribute must be configured with other_attr.
-			objectvalidator.AlsoRequires(path.Expressions{
-				path.MatchRoot("vrf_id"),
-			}...),
-		},
+		// Validators: []validator.Object{
+		// 	// Validate this attribute must be configured with other_attr.
+		// 	objectvalidator.AlsoRequires(path.Expressions{
+		// 		path.MatchRoot("vrf_id"),
+		// 	}...),
+		// },
 		Attributes: map[string]schema.Attribute{
 			"enabled": schema.BoolAttribute{
 				Optional: true,
@@ -129,6 +126,7 @@ func getSviDataSourceSchemaAttribute() schema.SingleNestedAttribute {
 
 func NewSviResourceModel(ctx context.Context, data map[string]interface{}) SviResourceModel {
 	svi := getEmptySviResourceModel()
+	svi.Enabled = basetypes.NewBoolValue(false)
 	for attributeName, attributeValue := range data {
 		if attributeName == "enabled" && attributeValue != nil {
 			boolAttr := attributeValue.(bool)
