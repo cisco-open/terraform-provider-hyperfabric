@@ -177,7 +177,7 @@ func (c *Client) DoAutoCommit() {
 				log.Printf("[TRACE] Auto-committing for fabric %s.", fabricId)
 				_, errorDiag := clientImpl.DoRestRequest(fmt.Sprintf("/api/v1/fabrics/%s/candidates/%s", fabricId, candidate), "POST", jsonPayload)
 				if errorDiag != nil {
-					log.Printf("[DEBUG] Error when commiting Fabric %s, %s. %s.", fabricId, errorDiag.Summary, errorDiag.Detail)
+					log.Printf("[DEBUG] Error when committing Fabric %s, %s. %s.", fabricId, errorDiag.Summary, errorDiag.Detail)
 				}
 			}
 
@@ -387,7 +387,7 @@ func StrtoInt(s string, startIndex int, bitSize int) (int64, error) {
 }
 
 func (c *Client) Do(req *http.Request) (*gabs.Container, *http.Response, error) {
-	log.Printf("[DEBUG] Begining Do method %s", req.URL.String())
+	log.Printf("[DEBUG] Beginning Do method %s", req.URL.String())
 
 	// retain the request body across multiple attempts
 	var body []byte
@@ -411,7 +411,7 @@ func (c *Client) Do(req *http.Request) (*gabs.Container, *http.Response, error) 
 				return nil, nil, fmt.Errorf("failed to connect due to a TLS error. Verify that you are connecting to the correct Hyperfabric service.\nError message: %+v", err)
 			} else {
 				if ok := c.backoff(attempts); !ok {
-					log.Printf("[ERROR] HTTP Connection error occured: %+v", err)
+					log.Printf("[ERROR] HTTP Connection error occurred: %+v", err)
 					log.Printf("[DEBUG] Exit from Do method")
 					return nil, nil, fmt.Errorf("failed to connect to the Hyperfabric service. Verify that you are connecting to the correct Hyperfabric service.\nError message: %+v", err)
 				} else {
@@ -439,12 +439,12 @@ func (c *Client) Do(req *http.Request) (*gabs.Container, *http.Response, error) 
 		} else if resp.StatusCode == 200 || resp.StatusCode == 201 {
 			obj, err := gabs.ParseJSON(bodyBytes)
 			if err != nil {
-				log.Printf("[ERROR] Error occured while JSON parsing response with status code 200 and 201: %+v", err)
+				log.Printf("[ERROR] Error occurred while JSON parsing response with status code 200 and 201: %+v", err)
 
 				// If nginx is too busy or the page is not found, nginx might respond with an HTML doc instead of a JSON Response.
 				// In those cases, parse the HTML response for the message and return that to the user
 				// htmlErr := c.checkHtmlResp(bodyStr)
-				// log.Printf("[ERROR] Error occured while json parsing: %s", htmlErr.Error())
+				// log.Printf("[ERROR] Error occurred while json parsing: %s", htmlErr.Error())
 				log.Printf("[DEBUG] Exit from Do method")
 				return nil, resp, fmt.Errorf("failed to parse JSON response with status code 200 and 201 from: %s. Verify that you are connecting to the correct Hyperfabric service.\nHTTP response status: %s\nMessage: %s", req.URL.String(), resp.Status, bodyBytes)
 			}
@@ -463,12 +463,12 @@ func (c *Client) Do(req *http.Request) (*gabs.Container, *http.Response, error) 
 			}
 			if ok := c.backoff(attempts); unrecoverableError || !ok {
 				if err != nil {
-					log.Printf("[ERROR] Error occured while json parsing: %+v", err)
+					log.Printf("[ERROR] Error occurred while json parsing: %+v", err)
 
 					// If nginx is too busy or the page is not found, nginx might respond with an HTML doc instead of a JSON Response.
 					// In those cases, parse the HTML response for the message and return that to the user
 					// htmlErr := c.checkHtmlResp(bodyStr)
-					// log.Printf("[ERROR] Error occured while json parsing: %s", htmlErr.Error())
+					// log.Printf("[ERROR] Error occurred while json parsing: %s", htmlErr.Error())
 					log.Printf("[DEBUG] Exit from Do method")
 					return nil, resp, fmt.Errorf("failed to parse JSON response from: %s. Verify that you are connecting to the correct Hyperfabric service.\nHTTP response status: %s\nMessage: %s", req.URL.String(), resp.Status, bodyBytes)
 				}
@@ -483,7 +483,7 @@ func (c *Client) Do(req *http.Request) (*gabs.Container, *http.Response, error) 
 }
 
 func (c *Client) backoff(attempts int) bool {
-	log.Printf("[DEBUG] Begining backoff method: attempts %v on %v", attempts, c.maxRetries)
+	log.Printf("[DEBUG] Beginning backoff method: attempts %v on %v", attempts, c.maxRetries)
 	if attempts >= c.maxRetries {
 		log.Printf("[DEBUG] Exit from backoff method with return value false")
 		return false
